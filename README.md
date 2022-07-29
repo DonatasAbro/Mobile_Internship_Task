@@ -1,4 +1,4 @@
-# Mobile_Internship_Task
+# Mobile Internship Task
 
 This Android application is an intership task assigned to me.
 

@@ -39,8 +39,8 @@ public class MainActivity extends AppCompatActivity {
             JSONArray dogUrlsJsonArray = dogUrlsJsonObject.getJSONArray("urls");
             for (int i = 0; i < 10 /*dogUrlsJsonArray.length()*/; i++) {
                 String dogUrl = dogUrlsJsonArray.get(i).toString();
-                dogSums.add(filterAndAddDigits(dogUrl));
                 dogPics.add(BitmapFactory.decodeStream((InputStream) new URL(dogUrl).getContent()));
+                dogSums.add(filterAndAddDigits(dogUrl));
             }
         } catch (JSONException | IOException e) {
             e.printStackTrace();

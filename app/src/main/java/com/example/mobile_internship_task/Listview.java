@@ -1,7 +1,6 @@
 package com.example.mobile_internship_task;
 
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
 
 public class Listview extends AppCompatActivity {

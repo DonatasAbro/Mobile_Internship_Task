@@ -1,6 +1,7 @@
 package com.example.mobile_internship_task;
 
 import androidx.appcompat.app.AppCompatActivity;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import android.widget.ListView;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -29,7 +31,6 @@ public class MainActivity extends AppCompatActivity {
         String jsonPath = "json/dog_urls.json";
         String dogUrlsStr = readFileContent(jsonPath);
         ArrayList<Bitmap> dogPics = new ArrayList<>();
-        ArrayList<String> dogUrls = new ArrayList<>();
         ArrayList<Integer> dogSums = new ArrayList<>();
         ListView dogUrlsList = findViewById(R.id.dogUrlsList);
         
@@ -37,9 +38,9 @@ public class MainActivity extends AppCompatActivity {
             JSONObject dogUrlsJsonObject = new JSONObject(dogUrlsStr);
             JSONArray dogUrlsJsonArray = dogUrlsJsonObject.getJSONArray("urls");
             for (int i = 0; i < 10 /*dogUrlsJsonArray.length()*/; i++) {
-                dogUrls.add(dogUrlsJsonArray.get(i).toString());
-                dogSums.add(filterAndAddDigits(dogUrls.get(i)));
-                dogPics.add(BitmapFactory.decodeStream((InputStream) new URL(dogUrls.get(i)).getContent()));
+                String dogUrl = dogUrlsJsonArray.get(i).toString();
+                dogSums.add(filterAndAddDigits(dogUrl));
+                dogPics.add(BitmapFactory.decodeStream((InputStream) new URL(dogUrl).getContent()));
             }
         } catch (JSONException | IOException e) {
             e.printStackTrace();
@@ -47,6 +48,15 @@ public class MainActivity extends AppCompatActivity {
 
         DogListAdapter dogListAdapter = new DogListAdapter(getApplicationContext(), dogPics, dogSums);
         dogUrlsList.setAdapter(dogListAdapter);
+
+        dogUrlsList.setOnItemClickListener((adapterView, view, i, l) -> {
+            Intent intent = new Intent(MainActivity.this, DogPhoto.class);
+            Bitmap dogPic = dogPics.get(i);
+            ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
+            dogPic.compress(Bitmap.CompressFormat.PNG, 50, byteStream);
+            intent.putExtra("dogPicStream", byteStream.toByteArray());
+            startActivity(intent);
+        });
     }
 
     private String readFileContent(String filepath){
@@ -68,6 +78,7 @@ public class MainActivity extends AppCompatActivity {
     private Integer filterAndAddDigits(String dogUrl) {
         Pattern pattern = Pattern.compile("\\d*[_]\\d*");
         Matcher match = pattern.matcher(dogUrl);
+
         if (match.find()) {
             String[] digits = match.group().split("_", 0);
             return Integer.parseInt(digits[0]) + Integer.parseInt(digits[1]);

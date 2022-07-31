@@ -75,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
         return returnable;
     }
 
-    private Integer filterAndAddDigits(String dogUrl) {
+    public static Integer filterAndAddDigits(String dogUrl) {
         Pattern pattern = Pattern.compile("\\d*[_]\\d*");
         Matcher match = pattern.matcher(dogUrl);
 

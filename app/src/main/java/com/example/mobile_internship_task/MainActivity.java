@@ -3,19 +3,18 @@ package com.example.mobile_internship_task;
 import androidx.appcompat.app.AppCompatActivity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.StrictMode;
-import android.util.Log;
 import android.widget.ListView;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -31,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
         String dogUrlsStr = readFileContent(jsonPath);
         ArrayList<Bitmap> dogPics = new ArrayList<>();
         ArrayList<String> dogUrls = new ArrayList<>();
+        ArrayList<Integer> dogSums = new ArrayList<>();
         ListView dogUrlsList = findViewById(R.id.dogUrlsList);
         
         try {
@@ -38,16 +38,14 @@ public class MainActivity extends AppCompatActivity {
             JSONArray dogUrlsJsonArray = dogUrlsJsonObject.getJSONArray("urls");
             for (int i = 0; i < 10 /*dogUrlsJsonArray.length()*/; i++) {
                 dogUrls.add(dogUrlsJsonArray.get(i).toString());
+                dogSums.add(filterAndAddDigits(dogUrls.get(i)));
                 dogPics.add(BitmapFactory.decodeStream((InputStream) new URL(dogUrls.get(i)).getContent()));
             }
         } catch (JSONException | IOException e) {
             e.printStackTrace();
         }
 
-//        ArrayAdapter<String> dogUrlsArrayAdapter = new ArrayAdapter<>(this, R.layout.activity_listview, R.id.SumView, dogUrls);
-//        dogUrlsList.setAdapter(dogUrlsArrayAdapter);
-
-        DogListAdapter dogListAdapter = new DogListAdapter(getApplicationContext(), dogPics,dogUrls);
+        DogListAdapter dogListAdapter = new DogListAdapter(getApplicationContext(), dogPics, dogSums);
         dogUrlsList.setAdapter(dogListAdapter);
     }
 
@@ -65,5 +63,17 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         return returnable;
+    }
+
+    private Integer filterAndAddDigits(String dogUrl) {
+        Pattern pattern = Pattern.compile("\\d*[_]\\d*");
+        Matcher match = pattern.matcher(dogUrl);
+        if (match.find()) {
+            String[] digits = match.group().split("_", 0);
+            return Integer.parseInt(digits[0]) + Integer.parseInt(digits[1]);
+        }
+        else {
+            return 0;
+        }
     }
 }

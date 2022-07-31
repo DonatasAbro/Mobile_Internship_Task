@@ -1,5 +1,6 @@
 package com.example.mobile_internship_task;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.view.LayoutInflater;
@@ -8,20 +9,19 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import java.util.ArrayList;
 
 public class DogListAdapter extends BaseAdapter {
-    Context context;
-    ArrayList<Bitmap> dogPics;
-    ArrayList<String> dogSums;
-    LayoutInflater inflater;
+    final Context context;
+    final ArrayList<Bitmap> dogPics;
+    final ArrayList<Integer> dogSums;
+    final LayoutInflater inflater;
 
-    public DogListAdapter(Context applicationContext, ArrayList<Bitmap> dogPics, ArrayList<String> dogSums) {
+    public DogListAdapter(Context applicationContext, ArrayList<Bitmap> dogPics, ArrayList<Integer> dogSums) {
         this.context = applicationContext;
         this.dogPics = dogPics;
         this.dogSums = dogSums;
-        inflater = LayoutInflater.from(applicationContext);
+        inflater = LayoutInflater.from(this.context);
     }
 
     @Override
@@ -39,13 +39,14 @@ public class DogListAdapter extends BaseAdapter {
         return 0;
     }
 
+    @SuppressLint({"ViewHolder", "InflateParams", "DefaultLocale"})
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
         view = inflater.inflate(R.layout.activity_listview, null);
-        ImageView dogPic = (ImageView) view.findViewById(R.id.dogImageView);
-        TextView dogSum = (TextView) view.findViewById(R.id.SumView);
+        ImageView dogPic = view.findViewById(R.id.dogImageView);
+        TextView dogSum = view.findViewById(R.id.SumView);
         dogPic.setImageBitmap(dogPics.get(i));
-        dogSum.setText(dogSums.get(i));
+        dogSum.setText(String.format("%d", dogSums.get(i)));
         return view;
     }
 }

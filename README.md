@@ -6,4 +6,5 @@ This Android application is an intership task assigned to me.
 
 Current features:
 - read and parse the *dog_urls.json* file into an array
-- display parsed array on a list
+- download images from the array of urls
+- display images and text on a list
